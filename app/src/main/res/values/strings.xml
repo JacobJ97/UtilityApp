@@ -4,4 +4,5 @@
     <string name="default_string">Default</string>
     <string name="location_services_switch">Use location?</string>
     <string name="postcode_input">Enter your postcode here...</string>
+    <string name="home_button">Home</string>
 </resources>
