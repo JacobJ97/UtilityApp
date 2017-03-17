@@ -61,6 +61,10 @@ public class Settings extends AppCompatActivity {
 
     public void goToHome(View view) {
         Intent intent = new Intent(this, MainActivity.class);
+        postcodeText = postCode.getText().toString();
+        switchCondition = switchLocation.isChecked();
+        intent.putExtra("postcodetext", postcodeText);
+        intent.putExtra("switchcondition", switchCondition);
         startActivity(intent);
     }
 
