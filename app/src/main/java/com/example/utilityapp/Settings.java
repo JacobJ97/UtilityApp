@@ -12,8 +12,8 @@ import android.widget.Switch;
 public class Settings extends AppCompatActivity {
 
     Switch switchLocation;
-    EditText postCode;
-    String postcodeText;
+    EditText town;
+    String townText;
     boolean switchCondition;
 
     @Override
@@ -25,35 +25,35 @@ public class Settings extends AppCompatActivity {
 
 
         switchLocation = (Switch)findViewById(R.id.locationServicesSwitch);
-        postCode = (EditText)findViewById(R.id.inputPostcode);
+        town = (EditText)findViewById(R.id.inputPostcode);
 
         if (settings != null) {
-            postcodeText = settings.getString("postcodetext", postcodeText);
+            townText = settings.getString("towntext", townText);
             switchCondition = settings.getBoolean("switchcondition", switchCondition);
 
             switchLocation.setChecked(switchCondition);
 
-            if (postcodeText != null) {
-                postCode.setText(postcodeText);
+            if (townText != null) {
+                town.setText(townText);
             }
         }
 
         if (switchLocation.isChecked()) {
-            postCode.setFocusable(false);
+            town.setFocusable(false);
         }
 
         switchLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    postCode.setFocusable(false);
-                    postCode.setFocusableInTouchMode(false);
-                    postCode.setClickable(false);
-                    postCode.setText("");
+                    town.setFocusable(false);
+                    town.setFocusableInTouchMode(false);
+                    town.setClickable(false);
+                    town.setText("");
                 }
                 else {
-                    postCode.setFocusable(true);
-                    postCode.setFocusableInTouchMode(true);
-                    postCode.setClickable(true);
+                    town.setFocusable(true);
+                    town.setFocusableInTouchMode(true);
+                    town.setClickable(true);
                 }
             }
         });
@@ -61,9 +61,9 @@ public class Settings extends AppCompatActivity {
 
     public void goToHome(View view) {
         Intent intent = new Intent(this, MainActivity.class);
-        postcodeText = postCode.getText().toString();
+        townText = town.getText().toString();
         switchCondition = switchLocation.isChecked();
-        intent.putExtra("postcodetext", postcodeText);
+        intent.putExtra("towntext", townText);
         intent.putExtra("switchcondition", switchCondition);
         startActivity(intent);
     }
@@ -74,8 +74,8 @@ public class Settings extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences("settings", MODE_APPEND);
         SharedPreferences.Editor edit = settings.edit();
         edit.clear();
-        postcodeText = postCode.getText().toString();
-        edit.putString("postcodetext", postcodeText);
+        townText = town.getText().toString();
+        edit.putString("towntext", townText);
         switchCondition = switchLocation.isChecked();
         edit.putBoolean("switchcondition", switchCondition);
         edit.commit();
