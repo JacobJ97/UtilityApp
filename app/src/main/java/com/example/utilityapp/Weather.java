@@ -1,4 +1,4 @@
-package com.example.utilityapp.com.example.utilityapp.model;
+package com.example.utilityapp;
 
 /**
  * Created by outba on 19/03/2017.

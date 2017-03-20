@@ -1,4 +1,4 @@
-package com.example.utilityapp.com.example.utilityapp.model;
+package com.example.utilityapp;
 
 import java.io.Serializable;
 

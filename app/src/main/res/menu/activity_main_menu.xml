@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/settings_id"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:onClick="goToSettings"
+        android:showAsAction="always"
+        android:title="@string/button_settings"
+        app:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
+</menu>

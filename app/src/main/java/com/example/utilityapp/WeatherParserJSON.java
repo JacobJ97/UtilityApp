@@ -1,8 +1,5 @@
 package com.example.utilityapp;
 
-import com.example.utilityapp.com.example.utilityapp.model.Location;
-import com.example.utilityapp.com.example.utilityapp.model.Weather;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

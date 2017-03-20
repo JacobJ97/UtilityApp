@@ -2,7 +2,16 @@
     <string name="app_name">UtilityApp</string>
     <string name="button_settings">Settings</string>
     <string name="default_string">Default</string>
-    <string name="location_services_switch">Use location?</string>
-    <string name="postcode_input">Enter your town here...</string>
+    <string name="location_services_switch">Location Services</string>
+    <string name="location_services_switch_description">Location services will track your current location.</string>
+    <string name="town_label">Town</string>
+    <string name="country_label">Country</string>
     <string name="home_button">Home</string>
+    <string-array name="countries_array">
+        <item>Australia</item>
+        <item>New Zealand</item>
+        <item>United Kingdom</item>
+        <item>United States of America</item>
+        <item>Canada</item>
+    </string-array>
 </resources>

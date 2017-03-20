@@ -8,21 +8,6 @@
     android:orientation="vertical"
     tools:context="com.example.utilityapp.MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:orientation="vertical">
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:onClick="goToSettings"
-        android:text="@string/button_settings" />
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/townText"
         android:layout_width="match_parent"
@@ -62,15 +47,32 @@
                 android:textSize="24sp"
                 android:text="@string/default_string" />
 
-            <TextView
-                android:id="@+id/textWeatherForecast"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:text="@string/default_string"
-                android:textSize="16sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textWeatherForecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="@string/default_string"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textWeatherForecastDetailed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_weight="0.5"
+                    android:paddingLeft="20dp"
+                    android:text="@string/default_string"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -86,21 +88,21 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:text="@string/default_string" />
 
         <TextView
             android:id="@+id/textWeatherVerdict"
             android:layout_width="match_parent"
-            android:layout_height="150dp" />
+            android:layout_height="246dp" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom|end"
         android:layout_weight="0.2"
+        android:gravity="bottom|end"
         android:orientation="horizontal">
 
 

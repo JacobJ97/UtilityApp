@@ -9,53 +9,78 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="vertical">
-
-    <Button
-        android:id="@+id/buttonMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:onClick="goToHome"
-        android:text="@string/home_button" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.7"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="1">
 
         <Switch
             android:id="@+id/locationServicesSwitch"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:paddingStart="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:checked="true"
+            android:paddingEnd="40dp"
+            android:paddingStart="40dp"
             android:scaleX="1.2"
             android:scaleY="1.2"
             android:text="@string/location_services_switch" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="200dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.05"
-            android:gravity="bottom"
-            android:labelFor="@+id/inputPostcode"
-            android:paddingStart="10dp"
-            android:text="@string/postcode_input" />
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-        <EditText
-            android:id="@+id/inputPostcode"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="text" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight=".5"
+                android:layout_gravity="bottom"
+                android:gravity="center_vertical"
+                android:labelFor="@+id/inputTown"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:text="@string/town_label"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/inputTown"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1.5"
+                android:ems="10"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+
+            <TextView
+                android:id="@+id/countryLabel"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight=".5"
+                android:gravity="center_vertical"
+                android:labelFor="@+id/countrySelector"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:text="@string/country_label"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <Spinner
+                android:id="@+id/countrySelector"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1.5" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
