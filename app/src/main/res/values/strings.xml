@@ -14,4 +14,7 @@
         <item>United States of America</item>
         <item>Canada</item>
     </string-array>
+    <string name="clear_button">Clear</string>
+    <string name="reload_button">Reload</string>
+    <string name="setup_settings">To view the weather, set up the settings.</string>
 </resources>

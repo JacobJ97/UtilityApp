@@ -17,7 +17,7 @@
             android:id="@+id/locationServicesSwitch"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:checked="true"
+            android:checked="false"
             android:paddingEnd="40dp"
             android:paddingStart="40dp"
             android:scaleX="1.2"

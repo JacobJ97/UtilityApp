@@ -1,12 +1,15 @@
 package com.example.utilityapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +27,18 @@ public class MainActivity extends AppCompatActivity {
     TextView weatherTemperature;
     TextView weatherTown;
     TextView timeStamp;
+    TextView settingsLabel;
+    Button clearButton;
+    Button reloadButton;
     String townText;
     String countryText;
+    String countryTextSaved;
+    String weatherTownText;
+    String weatherTemperatureText;
+    String weatherForecastText;
+    String weatherForecastDescriptionText;
+    String timeStampText;
     Boolean switchCondition;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,19 +51,40 @@ public class MainActivity extends AppCompatActivity {
         weatherTemperature = (TextView) findViewById(R.id.textTemp);
         weatherTown = (TextView) findViewById(R.id.townText);
         timeStamp = (TextView) findViewById(R.id.timeText);
+        reloadButton = (Button) findViewById(R.id.reloadButton);
+        clearButton = (Button) findViewById(R.id.clearButton);
+        settingsLabel = (TextView) findViewById(R.id.textSettings);
 
+        SharedPreferences settingsMain = getSharedPreferences("settingsmain", MODE_APPEND);
         Bundle extras = getIntent().getExtras();
 
+        if (settingsMain != null) {
+            weatherTownText = settingsMain.getString("weathertowntext", weatherTownText);
+            weatherTemperatureText = settingsMain.getString("weathertemperaturetext", weatherTemperatureText);
+            weatherForecastText = settingsMain.getString("weatherforecasttext", weatherForecastText);
+            weatherForecastDescriptionText = settingsMain.getString("weatherforecastdescriptiontext", weatherForecastDescriptionText);
+            timeStampText = settingsMain.getString("timestamptext", timeStampText);
+            countryTextSaved = settingsMain.getString("countrytextsaved", countryTextSaved);
+
+            weatherTown.setText(weatherTownText);
+            weatherTemperature.setText(weatherTemperatureText);
+            weatherForecast.setText(weatherForecastText);
+            weatherForecastDescription.setText(weatherForecastDescriptionText);
+            timeStamp.setText(timeStampText);
+
+            makeViewsAppear();
+        }
+
         if (extras != null) {
+            makeViewsAppear();
+
             townText = extras.getString("towntext");
             countryText = extras.getString("countrystring");
+            countryTextSaved = countryText;
             switchCondition = extras.getBoolean("switchcondition");
+
             if (townText != null) {
-                String countryTextAbbreviation = getAbbreviatedCountry(countryText);
-                townText = townText.concat("," + countryTextAbbreviation);
-                InitiateTaskWeather task = new InitiateTaskWeather();
-                task.execute(townText);
-                timeStampCompletion();
+                getWeatherData(townText, countryText);
             }
 
             if (switchCondition) {
@@ -61,28 +93,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getWeatherData(String townTextMethod, String countryTextMethod ) {
+        String countryTextAbbreviation = getAbbreviatedCountry(countryTextMethod);
+        String townTextMethodFinal = townTextMethod.concat("," + countryTextAbbreviation);
+        timeStampSent();
+        InitiateTaskWeather task = new InitiateTaskWeather();
+        task.execute(townTextMethodFinal);
+    }
+
     private String getAbbreviatedCountry(String countryText) {
 
         String countryTextAbbr = null;
 
         switch (countryText) {
-            case "Australia" : {
+            case "Australia": {
                 countryTextAbbr = "AU";
                 break;
             }
-            case "New Zealand" : {
+            case "New Zealand": {
                 countryTextAbbr = "NZ";
                 break;
             }
-            case "United Kingdom" : {
+            case "United Kingdom": {
                 countryTextAbbr = "UK";
                 break;
             }
-            case "United States" : {
+            case "United States": {
                 countryTextAbbr = "US";
                 break;
             }
-            case "Canada" : {
+            case "Canada": {
                 countryTextAbbr = "CA";
                 break;
             }
@@ -108,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void timeStampCompletion() {
+    public void timeStampSent() {
         Calendar calendar = new GregorianCalendar();
         String time = String.format("%02d:%02d", calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
         int amPm = calendar.get(Calendar.AM_PM);
@@ -118,12 +158,77 @@ public class MainActivity extends AppCompatActivity {
         } else {
             amOrPm = "pm";
         }
-        timeStamp.setText("Data retrieved at " + time + amOrPm);
+        timeStamp.setText("Request sent at " + time + amOrPm);
     }
 
     public void goToSettings(MenuItem item) {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
+    }
+
+    public void reloadWeather(View view) {
+        makeViewsDisappear();
+        getWeatherData(weatherTownText, countryText);
+        makeViewsAppear();
+    }
+
+    public void clearWeather(View view) {
+        makeViewsDisappear();
+    }
+
+    private void makeViewsDisappear() {
+        imageView.setVisibility(View.GONE);
+        weatherForecast.setVisibility(View.GONE);
+        weatherForecastDescription.setVisibility(View.GONE);
+        weatherTown.setVisibility(View.GONE);
+        weatherTemperature.setVisibility(View.GONE);
+        timeStamp.setVisibility(View.GONE);
+        reloadButton.setVisibility(View.GONE);
+        clearButton.setVisibility(View.GONE);
+
+        settingsLabel.setVisibility(View.VISIBLE);
+    }
+
+    private void makeViewsAppear() {
+        imageView.setVisibility(View.VISIBLE);
+        weatherForecast.setVisibility(View.VISIBLE);
+        weatherForecastDescription.setVisibility(View.VISIBLE);
+        weatherTown.setVisibility(View.VISIBLE);
+        weatherTemperature.setVisibility(View.VISIBLE);
+        timeStamp.setVisibility(View.VISIBLE);
+        reloadButton.setVisibility(View.VISIBLE);
+        clearButton.setVisibility(View.VISIBLE);
+
+        settingsLabel.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        SharedPreferences settingsMain = getSharedPreferences("settingsmain", MODE_APPEND);
+        SharedPreferences.Editor edit = settingsMain.edit();
+        edit.clear();
+        weatherTownText = weatherTown.getText().toString();
+        weatherTemperatureText = weatherTemperature.getText().toString();
+        weatherForecastText = weatherForecast.getText().toString();
+        weatherForecastDescriptionText = weatherForecastDescription.getText().toString();
+        timeStampText = timeStamp.getText().toString();
+
+        edit.putString("weathertowntext", weatherTownText);
+        edit.putString("weathertemperaturetext", weatherTemperatureText);
+        edit.putString("weatherforecasttext", weatherForecastText);
+        edit.putString("weatherforecastdescriptionText", weatherForecastDescriptionText);
+        edit.putString("timestamptext", timeStampText);
+        edit.putString("countrytextsaved", countryTextSaved);
+        edit.commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        makeViewsDisappear();
     }
 
     private class InitiateTaskWeather extends AsyncTask<String, Void, Weather> {

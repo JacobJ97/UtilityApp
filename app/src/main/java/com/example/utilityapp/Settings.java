@@ -31,7 +31,7 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         setTitle("Settings");
 
-        SharedPreferences settings = getSharedPreferences("settings", MODE_APPEND);
+        SharedPreferences settingsSettings = getSharedPreferences("settingssettings", MODE_APPEND);
 
         switchLocation = (Switch)findViewById(R.id.locationServicesSwitch);
         town = (EditText)findViewById(R.id.inputTown);
@@ -41,10 +41,10 @@ public class Settings extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         country.setAdapter(adapter);
 
-        if (settings != null) {
-            townText = settings.getString("towntext", townText);
-            countryInt = settings.getInt("countryint", countryInt);
-            switchCondition = settings.getBoolean("switchcondition", switchCondition);
+        if (settingsSettings != null) {
+            townText = settingsSettings.getString("towntext", townText);
+            countryInt = settingsSettings.getInt("countryint", countryInt);
+            switchCondition = settingsSettings.getBoolean("switchcondition", switchCondition);
 
             switchLocation.setChecked(switchCondition);
 
@@ -115,8 +115,8 @@ public class Settings extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        SharedPreferences settings = getSharedPreferences("settings", MODE_APPEND);
-        SharedPreferences.Editor edit = settings.edit();
+        SharedPreferences settingsSettings = getSharedPreferences("settingssettings", MODE_APPEND);
+        SharedPreferences.Editor edit = settingsSettings.edit();
         edit.clear();
         townText = town.getText().toString();
         edit.putString("towntext", townText);
