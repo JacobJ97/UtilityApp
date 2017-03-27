@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
             weatherForecast.setText(weatherForecastText);
             weatherForecastDescription.setText(weatherForecastDescriptionText);
             timeStamp.setText(timeStampText);
-
-            makeViewsAppear();
         }
 
         if (extras != null) {
@@ -167,12 +165,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void reloadWeather(View view) {
-        makeViewsDisappear();
-        getWeatherData(weatherTownText, countryText);
-        makeViewsAppear();
+        getWeatherData(weatherTownText, countryTextSaved);
     }
 
     public void clearWeather(View view) {
+        //makes everything disappear, returns to single label
         makeViewsDisappear();
     }
 
@@ -257,12 +254,153 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
 
+            //sets various info (temperature, condition, etc)
             weatherTown.setText(weather.location.getCity());
             weatherForecast.setText(weather.currentCondition.getWeatherCondition());
             weatherForecastDescription.setText(weather.currentCondition.getWeatherConditionDescription());
             float weatherTemperatureFloat = weather.temperature.getTemperature();
             String weatherTemperatureString = String.format("%.0f", weatherTemperatureFloat - 273.15);
             weatherTemperature.setText(weatherTemperatureString + " \u2103");
+
+
+            //sets weather condition icon
+            findWeatherImage(weather);
         }
+    }
+
+    private void findWeatherImage(Weather weather) {
+        String weatherConditionDescriptionText = weather.currentCondition.getWeatherConditionDescription();
+
+        switch (weatherConditionDescriptionText) {
+            //clear conditions
+            case "clear sky": {
+                imageView.setImageResource(R.drawable.sunny_day);
+                break;
+            }
+
+            //sunny/cloudy
+            case "few clouds": {
+                imageView.setImageResource(R.drawable.cloudy_sunny);
+                break;
+            }
+
+            //cloudy
+            case "scattered clouds": {
+                imageView.setImageResource(R.drawable.cloudy);
+                break;
+            }
+
+            //very cloudy
+            case "broken clouds":
+            case "overcast clouds": {
+                imageView.setImageResource(R.drawable.overcast);
+                break;
+            }
+
+            //light rain
+            case "light rain":
+            case "light intensity drizzle":
+            case "drizzle":
+            case "heavy intensity drizzle":
+            case "light intensity drizzle rain":
+            case "drizzle rain":
+            case "heavy intensity drizzle rain":
+            case "shower rain and drizzle":
+            case "light intensity shower rain":
+            case "shower drizzle": {
+                imageView.setImageResource(R.drawable.cloudy_rain);
+                break;
+            }
+
+
+            //heavy rain
+            case "heavy intensity rain":
+            case "very heavy rain":
+            case "extreme rain":
+            case "heavy intensity shower rain": {
+                imageView.setImageResource(R.drawable.heavy_rain);
+                break;
+            }
+
+            //moderate rain
+            case "moderate rain":
+            case "freezing rain":
+            case "shower rain":
+            case "ragged shower rain":
+            case "heavy shower rain and drizzle": {
+                imageView.setImageResource(R.drawable.rainy);
+                break;
+            }
+
+            //thunderstorm
+            case "thunderstorm with light rain":
+            case "thunderstorm with rain":
+            case "thunderstorm with heavy rain":
+            case "light thunderstorm":
+            case "heavy thunderstorm":
+            case "rugged thunderstorm":
+            case "thunderstorm with light drizzle":
+            case "thunderstorm with drizzle":
+            case "thunderstorm with heavy drizzle":
+            case "thunderstorm": {
+                imageView.setImageResource(R.drawable.thunderstorms);
+                break;
+            }
+
+            //snow
+            case "heavy snow":
+            case "light snow":
+            case "sleet":
+            case "shower sleet":
+            case "light rain and snow":
+            case "rain and snow":
+            case "light shower snow":
+            case "shower snow":
+            case "heavy shower snow":
+            case "snow": {
+                imageView.setImageResource(R.drawable.snowy);
+                break;
+            }
+
+            //hail
+            case "hail": {
+                imageView.setImageResource(R.drawable.hail);
+                break;
+            }
+
+            //wind
+            case "tornado":
+            case "windy":
+            case "light breeze":
+            case "gentle breeze":
+            case "moderate breeze":
+            case "freeze breeze":
+            case "strong breeze":
+            case "high wind, near gale":
+            case "gale":
+            case "severe gale":
+            case "storm":
+            case "violent storm":
+            case "hurricane": {
+                imageView.setImageResource(R.drawable.windy);
+                break;
+            }
+
+            //atmospheric conditions
+            case "mist":
+            case "smoke":
+            case "haze":
+            case "sand, dust whirls":
+            case "fog":
+            case "sand":
+            case "dust":
+            case "volcanic ash":
+            case "squalls": {
+                imageView.setImageResource(R.drawable.windy);
+                break;
+            }
+
+        }
+
     }
 }
