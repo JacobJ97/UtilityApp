@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class WeatherAPIConnection {
 
-    String weatherURL = "http://api.openweathermap.org/data/2.5/weather?q=";
+    String weatherURL = "http://api.openweathermap.org/data/2.5/weather?";
     String apiKey = "ebe567c3dc8e521a15cc1034f8a5cc29";
 
     public String retrieveWeatherData(String location) throws IOException {

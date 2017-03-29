@@ -13,10 +13,10 @@
         android:id="@+id/townText"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:visibility="gone"
         android:gravity="center"
         android:text="@string/default_string"
-        android:textSize="36sp" />
+        android:textSize="36sp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,8 +28,8 @@
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:visibility="gone"
             android:layout_marginStart="30dp"
+            android:visibility="gone"
             app:srcCompat="@android:color/holo_orange_dark" />
 
         <LinearLayout
@@ -45,8 +45,8 @@
                 android:paddingEnd="20dp"
                 android:paddingStart="20dp"
                 android:text="@string/default_string"
-                android:visibility="gone"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/textSettings"
@@ -80,11 +80,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:visibility="gone"
                     android:paddingEnd="20dp"
                     android:paddingStart="20dp"
                     android:text="@string/default_string"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -97,8 +97,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <TextView
             android:id="@+id/timeText"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="@string/default_string"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/coordinateText"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
@@ -115,22 +125,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/reloadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="gone"
-            android:onClick="reloadWeather"
-            android:text="@string/reload_button" />
-
-        <Button
             android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:visibility="gone"
             android:onClick="clearWeather"
-            android:text="@string/clear_button" />
+            android:text="@string/clear_button"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

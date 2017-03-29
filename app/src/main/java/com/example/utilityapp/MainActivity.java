@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     TextView weatherTown;
     TextView timeStamp;
     TextView settingsLabel;
+    TextView coordinatesLabel;
     Button clearButton;
-    Button reloadButton;
     String townText;
     String countryText;
     String countryTextSaved;
@@ -38,7 +38,11 @@ public class MainActivity extends AppCompatActivity {
     String weatherForecastText;
     String weatherForecastDescriptionText;
     String timeStampText;
-    Boolean switchCondition;
+    String latitudeText;
+    String longitudeText;
+    boolean switchCondition;
+    double longitude;
+    double latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
         weatherTemperature = (TextView) findViewById(R.id.textTemp);
         weatherTown = (TextView) findViewById(R.id.townText);
         timeStamp = (TextView) findViewById(R.id.timeText);
-        reloadButton = (Button) findViewById(R.id.reloadButton);
         clearButton = (Button) findViewById(R.id.clearButton);
         settingsLabel = (TextView) findViewById(R.id.textSettings);
+        coordinatesLabel = (TextView) findViewById(R.id.coordinateText);
 
         SharedPreferences settingsMain = getSharedPreferences("settingsmain", MODE_APPEND);
         Bundle extras = getIntent().getExtras();
@@ -65,12 +69,19 @@ public class MainActivity extends AppCompatActivity {
             weatherForecastDescriptionText = settingsMain.getString("weatherforecastdescriptiontext", weatherForecastDescriptionText);
             timeStampText = settingsMain.getString("timestamptext", timeStampText);
             countryTextSaved = settingsMain.getString("countrytextsaved", countryTextSaved);
+            latitudeText = settingsMain.getString("latitudetext", latitudeText);
+            longitudeText = settingsMain.getString("longitudetext", longitudeText);
+            switchCondition = settingsMain.getBoolean("switchcondition", switchCondition);
 
             weatherTown.setText(weatherTownText);
             weatherTemperature.setText(weatherTemperatureText);
             weatherForecast.setText(weatherForecastText);
             weatherForecastDescription.setText(weatherForecastDescriptionText);
             timeStamp.setText(timeStampText);
+
+            if (switchCondition) {
+                coordinatesLabel.setText("Lat: " + latitudeText + "   Long: " + longitudeText);
+            }
         }
 
         if (extras != null) {
@@ -80,20 +91,30 @@ public class MainActivity extends AppCompatActivity {
             countryText = extras.getString("countrystring");
             countryTextSaved = countryText;
             switchCondition = extras.getBoolean("switchcondition");
+            longitude = extras.getDouble("longitudecoords");
+            latitude = extras.getDouble("latitudecoords");
 
             if (townText != null) {
-                getWeatherData(townText, countryText);
+                getWeatherDataTownCountry(townText, countryText);
             }
 
             if (switchCondition) {
-                System.out.println("hey");
+                getWeatherDataCoordinates(longitude, latitude);
             }
+
         }
     }
 
-    private void getWeatherData(String townTextMethod, String countryTextMethod ) {
+    private void getWeatherDataCoordinates(double longitude, double latitude) {
+        String convertCoords = "lat=" + String.valueOf(latitude) + "&lon=" + String.valueOf(longitude);
+        timeStampSent();
+        InitiateTaskWeather task = new InitiateTaskWeather();
+        task.execute(convertCoords);
+    }
+
+    private void getWeatherDataTownCountry(String townTextMethod, String countryTextMethod ) {
         String countryTextAbbreviation = getAbbreviatedCountry(countryTextMethod);
-        String townTextMethodFinal = townTextMethod.concat("," + countryTextAbbreviation);
+        String townTextMethodFinal = "q=" + townTextMethod.concat("," + countryTextAbbreviation);
         timeStampSent();
         InitiateTaskWeather task = new InitiateTaskWeather();
         task.execute(townTextMethodFinal);
@@ -156,16 +177,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             amOrPm = "pm";
         }
-        timeStamp.setText("Request sent at " + time + amOrPm);
+        timeStampText = "Request sent at " + time + amOrPm;
+        timeStamp.setText(timeStampText);
     }
 
     public void goToSettings(MenuItem item) {
         Intent intent = new Intent(this, Settings.class);
         startActivity(intent);
-    }
-
-    public void reloadWeather(View view) {
-        getWeatherData(weatherTownText, countryTextSaved);
     }
 
     public void clearWeather(View view) {
@@ -180,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
         weatherTown.setVisibility(View.GONE);
         weatherTemperature.setVisibility(View.GONE);
         timeStamp.setVisibility(View.GONE);
-        reloadButton.setVisibility(View.GONE);
         clearButton.setVisibility(View.GONE);
+        coordinatesLabel.setVisibility(View.GONE);
 
         settingsLabel.setVisibility(View.VISIBLE);
     }
@@ -193,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
         weatherTown.setVisibility(View.VISIBLE);
         weatherTemperature.setVisibility(View.VISIBLE);
         timeStamp.setVisibility(View.VISIBLE);
-        reloadButton.setVisibility(View.VISIBLE);
         clearButton.setVisibility(View.VISIBLE);
+        coordinatesLabel.setVisibility(View.VISIBLE);
 
         settingsLabel.setVisibility(View.GONE);
     }
@@ -210,14 +228,16 @@ public class MainActivity extends AppCompatActivity {
         weatherTemperatureText = weatherTemperature.getText().toString();
         weatherForecastText = weatherForecast.getText().toString();
         weatherForecastDescriptionText = weatherForecastDescription.getText().toString();
-        timeStampText = timeStamp.getText().toString();
 
         edit.putString("weathertowntext", weatherTownText);
         edit.putString("weathertemperaturetext", weatherTemperatureText);
         edit.putString("weatherforecasttext", weatherForecastText);
-        edit.putString("weatherforecastdescriptionText", weatherForecastDescriptionText);
+        edit.putString("weatherforecastdescriptiontext", weatherForecastDescriptionText);
         edit.putString("timestamptext", timeStampText);
         edit.putString("countrytextsaved", countryTextSaved);
+        edit.putString("longitudetext", longitudeText);
+        edit.putString("latitudetext", latitudeText);
+        edit.putBoolean("switchcondition", switchCondition);
         edit.commit();
     }
 
@@ -262,6 +282,9 @@ public class MainActivity extends AppCompatActivity {
             String weatherTemperatureString = String.format("%.0f", weatherTemperatureFloat - 273.15);
             weatherTemperature.setText(weatherTemperatureString + " \u2103");
 
+            if (switchCondition) {
+                coordinatesLabel.setText("Lat: " + latitude + "   Long: " + longitude);
+            }
 
             //sets weather condition icon
             findWeatherImage(weather);

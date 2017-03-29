@@ -1,10 +1,17 @@
 package com.example.utilityapp;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.*;
+import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +30,8 @@ import java.util.regex.Pattern;
 
 public class Settings extends AppCompatActivity {
 
+    private final int REQUEST_PERMISSION_LOCATION_SERVICES = 1;
+
     Switch switchLocation;
     EditText town;
     Spinner country;
@@ -30,6 +39,8 @@ public class Settings extends AppCompatActivity {
     TextView copyright;
     int countryInt;
     boolean switchCondition;
+    double longitude;
+    double latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +50,10 @@ public class Settings extends AppCompatActivity {
 
         SharedPreferences settingsSettings = getSharedPreferences("settingssettings", MODE_APPEND);
 
-        switchLocation = (Switch)findViewById(R.id.locationServicesSwitch);
-        town = (EditText)findViewById(R.id.inputTown);
-        country = (Spinner)findViewById(R.id.countrySelector);
+        switchLocation = (Switch) findViewById(R.id.locationServicesSwitch);
+        town = (EditText) findViewById(R.id.inputTown);
+        country = (Spinner) findViewById(R.id.countrySelector);
         copyright = (TextView) findViewById(R.id.textCopyright);
-
 
 
         copyright.setText("Weather icons designed by Titusurya / Freepik");
@@ -62,6 +72,7 @@ public class Settings extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.countries_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         country.setAdapter(adapter);
+        switchLocation.setEnabled(true);
 
         if (settingsSettings != null) {
             townText = settingsSettings.getString("towntext", townText);
@@ -80,6 +91,54 @@ public class Settings extends AppCompatActivity {
             town.setEnabled(false);
             town.setText("");
             country.setEnabled(false);
+
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(Settings.this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        REQUEST_PERMISSION_LOCATION_SERVICES);
+
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            android.location.Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+
+            final LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
         }
 
         switchLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -88,13 +147,28 @@ public class Settings extends AppCompatActivity {
                     town.setEnabled(false);
                     town.setText("");
                     country.setEnabled(false);
-                }
-                else {
+                } else {
                     town.setEnabled(true);
                     country.setEnabled(true);
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    Toast.makeText(Settings.this, "Permission denied to locations", Toast.LENGTH_SHORT).show();
+                    switchLocation.setEnabled(false);
+                }
+            }
+        }
     }
 
     @Override
@@ -131,6 +205,8 @@ public class Settings extends AppCompatActivity {
         String countryString = country.getSelectedItem().toString();
         intent.putExtra("countrystring", countryString);
         intent.putExtra("switchcondition", switchCondition);
+        intent.putExtra("longitudecoords", longitude);
+        intent.putExtra("latitudecoords", latitude);
         startActivity(intent);
     }
 
@@ -146,6 +222,7 @@ public class Settings extends AppCompatActivity {
         edit.putInt("countryint", countryInt);
         switchCondition = switchLocation.isChecked();
         edit.putBoolean("switchcondition", switchCondition);
+
         edit.commit();
     }
 }
