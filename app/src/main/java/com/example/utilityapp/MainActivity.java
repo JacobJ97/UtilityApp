@@ -18,6 +18,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     TextView weatherTown;
     TextView timeStamp;
     TextView settingsLabel;
-    TextView coordinatesLabel;
     Button clearButton;
     String townText;
     String countryText;
@@ -57,9 +57,8 @@ public class MainActivity extends AppCompatActivity {
         timeStamp = (TextView) findViewById(R.id.timeText);
         clearButton = (Button) findViewById(R.id.clearButton);
         settingsLabel = (TextView) findViewById(R.id.textSettings);
-        coordinatesLabel = (TextView) findViewById(R.id.coordinateText);
 
-        SharedPreferences settingsMain = getSharedPreferences("settingsmain", MODE_APPEND);
+        SharedPreferences settingsMain = getSharedPreferences("settingsmain", 0);
         Bundle extras = getIntent().getExtras();
 
         if (settingsMain != null) {
@@ -79,14 +78,12 @@ public class MainActivity extends AppCompatActivity {
             weatherForecastDescription.setText(weatherForecastDescriptionText);
             timeStamp.setText(timeStampText);
 
-            if (switchCondition) {
-                coordinatesLabel.setText("Lat: " + latitudeText + "   Long: " + longitudeText);
+            if (weatherForecastDescriptionText != null) {
+                findWeatherImage(weatherForecastDescriptionText);
             }
         }
 
         if (extras != null) {
-            makeViewsAppear();
-
             townText = extras.getString("towntext");
             countryText = extras.getString("countrystring");
             countryTextSaved = countryText;
@@ -94,17 +91,20 @@ public class MainActivity extends AppCompatActivity {
             longitude = extras.getDouble("longitudecoords");
             latitude = extras.getDouble("latitudecoords");
 
-            if (townText != null) {
+            if (townText != null && countryText != null) {
                 getWeatherDataTownCountry(townText, countryText);
             }
-
             if (switchCondition) {
                 getWeatherDataCoordinates(longitude, latitude);
             }
 
+            System.out.println(switchCondition);
+            //makes all labels and views appear
+            makeViewsAppear();
         }
     }
 
+    //constructs lat+long string, sends string to be used in api
     private void getWeatherDataCoordinates(double longitude, double latitude) {
         String convertCoords = "lat=" + String.valueOf(latitude) + "&lon=" + String.valueOf(longitude);
         timeStampSent();
@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         task.execute(convertCoords);
     }
 
+    //constructs town+country string, sends string to be used in api
     private void getWeatherDataTownCountry(String townTextMethod, String countryTextMethod ) {
         String countryTextAbbreviation = getAbbreviatedCountry(countryTextMethod);
         String townTextMethodFinal = "q=" + townTextMethod.concat("," + countryTextAbbreviation);
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         task.execute(townTextMethodFinal);
     }
 
+    //finds country matching selected country in settings, converts it to abbreviation
     private String getAbbreviatedCountry(String countryText) {
 
         String countryTextAbbr = null;
@@ -149,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         return countryTextAbbr;
     }
 
+    //sets up menu setting (to send user to settings)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -167,9 +170,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //before api request is sent, timestamp is generated
     public void timeStampSent() {
         Calendar calendar = new GregorianCalendar();
-        String time = String.format("%02d:%02d", calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
+        String time = String.format(Locale.ENGLISH, "%02d:%02d", calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE));
         int amPm = calendar.get(Calendar.AM_PM);
         String amOrPm;
         if (amPm == Calendar.AM) {
@@ -199,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
         weatherTemperature.setVisibility(View.GONE);
         timeStamp.setVisibility(View.GONE);
         clearButton.setVisibility(View.GONE);
-        coordinatesLabel.setVisibility(View.GONE);
 
         settingsLabel.setVisibility(View.VISIBLE);
     }
@@ -212,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
         weatherTemperature.setVisibility(View.VISIBLE);
         timeStamp.setVisibility(View.VISIBLE);
         clearButton.setVisibility(View.VISIBLE);
-        coordinatesLabel.setVisibility(View.VISIBLE);
 
         settingsLabel.setVisibility(View.GONE);
     }
@@ -234,11 +236,8 @@ public class MainActivity extends AppCompatActivity {
         edit.putString("weatherforecasttext", weatherForecastText);
         edit.putString("weatherforecastdescriptiontext", weatherForecastDescriptionText);
         edit.putString("timestamptext", timeStampText);
-        edit.putString("countrytextsaved", countryTextSaved);
-        edit.putString("longitudetext", longitudeText);
-        edit.putString("latitudetext", latitudeText);
         edit.putBoolean("switchcondition", switchCondition);
-        edit.commit();
+        edit.apply();
     }
 
     @Override
@@ -256,12 +255,14 @@ public class MainActivity extends AppCompatActivity {
             String data = null;
 
             try {
+                //background operation to call api and get weather data json based on input
                 data = ((new WeatherAPIConnection()).retrieveWeatherData(params[0]));
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             try {
+                //background operation to deconstruct json file into object
                 weather = WeatherParserJSON.getWeather(data);
 
             } catch (JSONException e) {
@@ -279,22 +280,21 @@ public class MainActivity extends AppCompatActivity {
             weatherForecast.setText(weather.currentCondition.getWeatherCondition());
             weatherForecastDescription.setText(weather.currentCondition.getWeatherConditionDescription());
             float weatherTemperatureFloat = weather.temperature.getTemperature();
-            String weatherTemperatureString = String.format("%.0f", weatherTemperatureFloat - 273.15);
+            String weatherTemperatureString = String.format(Locale.ENGLISH, "%.0f", weatherTemperatureFloat - 273.15);
             weatherTemperature.setText(weatherTemperatureString + " \u2103");
 
-            if (switchCondition) {
-                coordinatesLabel.setText("Lat: " + latitude + "   Long: " + longitude);
-            }
-
             //sets weather condition icon
-            findWeatherImage(weather);
+            retrieveWeatherDescription(weather);
         }
     }
 
-    private void findWeatherImage(Weather weather) {
+    private void retrieveWeatherDescription(Weather weather) {
         String weatherConditionDescriptionText = weather.currentCondition.getWeatherConditionDescription();
+        findWeatherImage(weatherConditionDescriptionText);
+    }
 
-        switch (weatherConditionDescriptionText) {
+    private void findWeatherImage(String weatherDescription) {
+        switch (weatherDescription) {
             //clear conditions
             case "clear sky": {
                 imageView.setImageResource(R.drawable.sunny_day);

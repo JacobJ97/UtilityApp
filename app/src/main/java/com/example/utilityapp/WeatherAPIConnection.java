@@ -8,7 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by outba on 19/03/2017.
+ * The data needed is contained within an API, and thus a request is needed to be sent in order
+ * for the application to show users weather information.
  */
 
 public class WeatherAPIConnection {
@@ -18,16 +19,18 @@ public class WeatherAPIConnection {
 
     public String retrieveWeatherData(String location) throws IOException {
 
-        HttpURLConnection connection = null;
-        InputStream inputStream = null;
+        HttpURLConnection connection;
+        InputStream inputStream;
 
         try {
+            //constructs url and sends a request
             connection = (HttpURLConnection) (new URL(weatherURL + location + "&appid=" + apiKey)).openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.connect();
 
+            //stringbuilder used as fast/low memory way of storing retrieved request data, and is turned into regular string
             StringBuilder buffer = new StringBuilder();
             inputStream = connection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -43,10 +46,7 @@ public class WeatherAPIConnection {
         catch (IOException e) {
             e.printStackTrace();
         }
-        finally {
-            //inputStream.close();
-            //connection.disconnect();
-        }
+
         return null;
     }
 }
