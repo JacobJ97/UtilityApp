@@ -1,31 +1,28 @@
 package com.example.utilityapp;
 
-/**
- * Created by outba on 19/03/2017.
- */
 
-public class Weather {
-    public Location location;
-    public CurrentCondition currentCondition = new CurrentCondition();
-    public Temperature temperature = new Temperature();
+class Weather {
+    Location location;
+    CurrentCondition currentCondition = new CurrentCondition();
+    Temperature temperature = new Temperature();
 
     public class CurrentCondition {
-        private String weatherCondition;
-        private String weatherConditionDescription;
+        String weatherCondition;
+        String weatherConditionDescription;
 
-        public String getWeatherCondition() {
+        String getWeatherCondition() {
             return weatherCondition;
         }
 
-        public void setWeatherCondition(String weatherCondition) {
+        void setWeatherCondition(String weatherCondition) {
             this.weatherCondition = weatherCondition;
         }
 
-        public String getWeatherConditionDescription() {
+        String getWeatherConditionDescription() {
             return weatherConditionDescription;
         }
 
-        public void setWeatherConditionDescription(String weatherConditionDescription) {
+        void setWeatherConditionDescription(String weatherConditionDescription) {
             this.weatherConditionDescription = weatherConditionDescription;
         }
     }
@@ -33,11 +30,11 @@ public class Weather {
     public class Temperature {
         private float temperature;
 
-        public float getTemperature() {
+        float getTemperature() {
             return temperature;
         }
 
-        public void setTemperature(float temperature) {
+        void setTemperature(float temperature) {
             this.temperature = temperature;
         }
     }

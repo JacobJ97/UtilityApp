@@ -8,8 +8,8 @@ import org.json.JSONObject;
  * Data that is retrieved from the api is in JSON format, and will be converted into Objects.
  */
 
-public class WeatherParserJSON {
-    public static Weather getWeather(String data) throws JSONException {
+class WeatherParserJSON {
+    static Weather getWeather(String data) throws JSONException {
         Weather weather = new Weather();
 
         JSONObject jsonObject = new JSONObject(data);

@@ -12,12 +12,12 @@ import java.net.URL;
  * for the application to show users weather information.
  */
 
-public class WeatherAPIConnection {
+class WeatherAPIConnection {
 
     String weatherURL = "http://api.openweathermap.org/data/2.5/weather?";
     String apiKey = "ebe567c3dc8e521a15cc1034f8a5cc29";
 
-    public String retrieveWeatherData(String location) throws IOException {
+    String retrieveWeatherData(String location) throws IOException {
 
         HttpURLConnection connection;
         InputStream inputStream;
