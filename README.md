@@ -16,8 +16,8 @@ The application will have a settings page, allowing users to choose from allowin
 
 ## Possible Additions
 
-- Live notifications
-- Widgets available on lockscreen & home screen
+~~- Live notifications~~
+~~- Widgets available on lockscreen & home screen~~
 
 
 
